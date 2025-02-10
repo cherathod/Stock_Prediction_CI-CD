@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="../static/CSS/prediction.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="../static/images/Bull3.png" alt="Logo" style="width: 200px; display: block; margin: 0 auto;">
+        </div>
+        <ul>
+            <li onclick="showForm('Time-Series')">Time-Series Prediction</li>
+            <li onclick="showForm('Feature-Based')">Feature-Based Prediction</li>
+        </ul>
+        <!-- Prediction Form -->
+        <div class="card" style="max-width: 50%;">
+            <h3>Prediction Form</h3>
+            <div id="form-content">
+                <label for="ticker">Select Stock:</label>
+                <select id="ticker">
+                    <option value="AAPL">AAPL</option>
+                    <option value="GOOGL">GOOGL</option>
+                    <option value="AMZN">AMZN</option>
+                    <option value="MSFT">MSFT</option>
+                </select>
+
+                <!-- Time-Series Specific Fields -->
+                <div id="time-series-fields" style="display:none;">
+                    <label for="years">Years to Predict:</label>
+                    <input type="number" id="years" placeholder="e.g., 1">
+                </div>
+
+                <!-- Feature-Based Specific Fields -->
+                <div id="feature-fields" style="display:none;">
+                    <label for="high-price">High Price:</label>
+                    <input type="number" id="high-price" placeholder="e.g., 150">
+                    <label for="low-price">Low Price:</label>
+                    <input type="number" id="low-price" placeholder="e.g., 145">
+                </div>
+
+                <!-- Algorithm Selection -->
+                <label for="algorithm">Select Algorithm:</label>
+                <select id="algorithm">
+                    <option value="LSTM">LSTM</option>
+                    <option value="XGBoost">XGBoost</option> <!-- Updated to match your model options -->
+                </select>
+
+                <button onclick="fetchPrediction()">Submit</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" style="margin-top: -45%;">
+        <header style="max-width: 50%;">
+            <h2>Stock Prediction Dashboard</h2>
+        </header>
+
+        <!-- Loading Indicator -->
+        <div id="loading" style="display:none;">Loading...</div>
+
+        <!-- Prediction Results -->
+        <div class="card chart-container" id="chart-container" style="display:none;">
+            <h3>Prediction Chart</h3>
+            <img id="chart" src="" alt="Chart" style="max-width: 100%;">
+        </div>
+
+        <div class="card chart-container" id="3d-chart-container" style="display:none;">
+            <h3>3D Prediction Chart</h3>
+            <div id="plotly-3d"></div>
+        </div>
+    </div>
+
+
+    <script src="../static/js/prediction.js"></script>
+</body>
+
+</html>

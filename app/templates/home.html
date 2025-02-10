@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bull-Bear Market Dashboard</title>
+    <!-- <link rel="stylesheet" href="../static/CSS/styles.css"> -->
+    <link rel="stylesheet" href="../static/CSS/home.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        const apiKey = 'YVAIGR6G6EXB0VP7'; // Replace with your Alpha Vantage API Key
+
+        async function fetchStockData(symbol, elementId) {
+            const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
+            const displayElement = document.getElementById(elementId);
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data["Note"]) {
+                    displayElement.innerHTML = `<p>API limit reached. Try again later.</p>`;
+                    return;
+                }
+
+                const stockData = data["Global Quote"];
+                if (stockData) {
+                    const price = parseFloat(stockData["05. price"]);
+                    const open = parseFloat(stockData["02. open"]);
+                    const change = parseFloat(stockData["09. change"]);
+                    const percentChange = parseFloat(stockData["10. change percent"]);
+
+                    displayElement.innerHTML = `
+                         <p>Price: ₹${price.toFixed(2)}</p>
+                         <p>Open: ₹${open.toFixed(2)}</p>
+                         <p>Change: ₹${change.toFixed(2)} (${percentChange})</p>
+                     `;
+                    displayElement.classList.add(change >= 0 ? "positive" : "negative");
+                } else {
+                    displayElement.innerHTML = `<p>No data available for ${symbol}.</p>`;
+                }
+            } catch (error) {
+                console.error(`Error fetching data for ${symbol}:`, error);
+                displayElement.innerHTML = `<p>Error loading data.</p>`;
+            }
+        }
+
+        window.onload = function () {
+            // Fetch stock data for predefined symbols
+            fetchStockData("NSE:NIFTY", "NIFTY-data");
+            fetchStockData("BSE:SENSEX", "SENSEX-data");
+            fetchStockData("NSE:BANKNIFTY", "BANKNIFTY-data");
+            fetchStockData("NSE:FINNIFTY", "FINNIFTY-data");
+
+            // Initialize TradingView widget
+            new TradingView.widget({
+                "container_id": "tradingview_advanced_chart",
+                "autosize": false,
+                "width": '100%',
+                "height": 700,
+                "symbol": "NASDAQ:AAPL",
+                "interval": "1",
+                "theme": "light",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "withdateranges": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "save_image": false,
+                "studies": ["Volume@tv-basicstudies"],
+                "show_popup_button": true,
+                "popup_width": "1000",
+                "popup_height": "650"
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="../static/images/Bull3.png" alt="Logo">
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search...">
+            <img src="../static/images/search.png" alt="Search" class="search-img">
+        </div>
+        <div class="user-menu">
+            <a href="#"><img src="../static/images/notification.png" alt="Notifications"></a>
+            <a href="{{ url_for('auth.orders') }}">
+                <img src="{{ url_for('static', filename='images/wallet.png') }}" alt="Wallet">
+            </a>
+            <a href="{{ url_for('auth.profile') }}"> <img src="{{ url_for('static', filename='images/profile.png') }}"
+                    alt="Profile"> </a>
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <ul>
+                <li><a href="{{ url_for('dashboard.options_trading') }}"><img
+                            src="{{ url_for('static', filename='images/Options_Trading.png') }}" alt="Options_Trading">
+                    </a></li>
+                <li><a href="{{ url_for('prediction_routes.stock_prediction') }}"><img
+                            src="{{ url_for('static', filename='images/Prediction.png') }}" alt="Prediction"></a></li>
+                <li><a href="{{ url_for('auth.stocks') }}"><img
+                            src="{{ url_for('static', filename='images/stock.png') }}" alt="Stock"></a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <section class="section tradingview-chart">
+                <div class="tradingview-widget-container">
+                    <div id="tradingview_advanced_chart"></div>
+                </div>
+            </section>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <img src="../static/images/Bull3.png" alt="Bull-Bear Logo" class="footer-logo">
+                <p>
+                    Yamuna Nager, 10rd & 16th Floor<br>
+                    Nigdi Main Road, Pune<br>
+                    Maharashtara - 411044<br>
+                    <a href="#">Contact Us</a>
+                </p>
+                <div class="footer-social">
+                    <a href="#"><img src="../static/images/facebook.png" alt="Facebook"></a>
+                    <a href="#"><img src="../static/images/twitter.png" alt="Twitter"></a>
+                    <a href="#"><img src="../static/images/youtube.png" alt="YouTube"></a>
+                    <a href="#"><img src="../static/images/instagram.png" alt="Instagram"></a>
+                    <a href="#"><img src="../static/images/linkedin.png" alt="LinkedIn"></a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <div>
+                    <h4>PRODUCTS</h4>
+                    <a href="#">Stocks</a>
+                    <a href="#">Futures & Options</a>
+                    <a href="#">Mutual Funds</a>
+                    <a href="#">Bill Payments</a>
+                </div>
+                <div>
+                    <h4>BULL-BEAR</h4>
+                    <a href="#">About Us</a>
+                    <a href="#">Media & Press</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Help & Support</a>
+                    <a href="#">Trust & Safety</a>
+                </div>
+                <div>
+                    <h4>QUICK LINKS</h4>
+                    <a href="#">AMC Mutual Funds</a>
+                    <a href="#">Calculators</a>
+                    <a href="#">Glossary</a>
+                    <a href="#">Open Demat Account</a>
+                    <a href="#">Sitemap</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2025 Bull-Bear Stock Price Prediction App. All rights reserved. Built with ❤️ in India <br><a
+                    href="#">supportbullbear@gmail.com</a></br></p>
+            <div class="footer-apps">
+                <a href="#"><img src="../static/images/appstore.png" alt="Download on the App Store"></a>
+                <a href="#"><img src="../static/images/android.png" alt="Get it on Google Play"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/js/home.js"></script>
+
+</body>
+
+</html>

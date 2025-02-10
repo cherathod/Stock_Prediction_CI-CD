@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - {{ user.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/CSS/profile.css') }}">
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/bullish.png') }}" alt="Logo">
+            </div>
+            <!-- Navigation Menu -->
+            <ul>
+                <li>
+                    <a href="{{ url_for('auth.dashboard') }}">
+                        <img src="{{ url_for('static', filename='images/home.png') }}" alt="home">
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('auth.stocks') }}">
+                        <img src="{{ url_for('static', filename='images/settings.png') }}" alt="setting">
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        <!-- Portfolio Section -->
+        <div class="portfolio-section" id="portfolio-section">
+            <div class="portfolio-header">
+                <h2>Portfolio</h2>
+            </div>
+            <div class="portfolio-chart" id="portfolio-chart">
+                <img src="../static/images/3d.png" alt="Portfolio Chart" />
+                <img src="../static/images/3d.png" alt="Portfolio Chart" />
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #c6c6e7;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        input[type="date"],
+        textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .note {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .login-section {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .login-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #82f6b8;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #82f6b8;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Register</h1>
+        <form action="/register" method="POST" enctype="multipart/form-data">
+
+            <!-- Name Field -->
+            <label for="name">Full Name:</label>
+            <input type="text" name="name" id="name" required>
+
+            <!-- First Name -->
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" id="first_name" required>
+
+            <!-- Last Name -->
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" id="last_name" required>
+
+            <!-- Email Field -->
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <!-- Password Field -->
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <!-- Phone Number Field -->
+            <label for="phone_number">Phone Number:</label>
+            <input type="tel" id="phone_number" name="phone_number" placeholder="Enter your phone number">
+
+            <!-- Address Field -->
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" placeholder="Enter your address" rows="4"></textarea>
+
+            <!-- Date of Birth Field -->
+            <label for="date_of_birth">Date of Birth:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth">
+
+            <!-- Profile Picture Upload -->
+            <label for="profile_picture">Profile Picture:</label>
+            <input type="file" id="profile_picture" name="profile_picture">
+
+            <!-- Active Checkbox -->
+            <label for="is_active">Active:</label>
+            <input type="checkbox" id="is_active" name="is_active" checked>
+
+            <!-- Register Button -->
+            <button type="submit">Register</button>
+        </form>
+        <div class="note">
+            By registering, you agree to our <a href="#" style="color: #007BFF;">Terms & Conditions</a>.
+        </div>
+        <!-- Login Button Section -->
+        <div class="login-section">
+            <p>Already have an account?</p>
+            <a href="/login" class="login-btn">Login</a>
+        </div>
+    </div>
+</body>
+</html>

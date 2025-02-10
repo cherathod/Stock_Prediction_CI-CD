@@ -1,0 +1,45 @@
+{% extends "home.html" %}
+
+{% block title %}Stocks{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">📈 Stock Market Overview</h1>
+
+    <table class="table table-bordered table-hover text-center">
+        <thead class="thead-dark">
+            <tr>
+                <th>Stock Name</th>
+                <th>Symbol</th>
+                <th>Current Price ($)</th>
+                <th>Change (%)</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stock in stocks %}
+            <tr>
+                <td>{{ stock.name }}</td>
+                <td><strong>{{ stock.symbol }}</strong></td>
+                <td>${{ stock.price }}</td>
+                <td>
+                    <span class="{% if stock.change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                        {{ stock.change }}%
+                        {% if stock.change >= 0 %}
+                        🔼
+                        {% else %}
+                        🔽
+                        {% endif %}
+                    </span>
+                </td>
+                <td>{{ stock.volume }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <button class="btn btn-primary" onclick="location.reload();">🔄 Refresh Data</button>
+    </div>
+</div>
+{% endblock %}

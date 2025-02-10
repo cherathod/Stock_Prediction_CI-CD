@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            padding: 20px;
+        }
+        .orders {
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+        }
+        .orders h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .order-list {
+            margin-top: 10px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+        .order-actions button {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .order-actions button:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const ordersContainer = document.querySelector("#orders-container");
+
+            // Load orders from local storage
+            function loadOrders() {
+                const orders = JSON.parse(localStorage.getItem("orders")) || [];
+                if (orders.length > 0) {
+                    renderOrders(orders);
+                } else {
+                    ordersContainer.innerHTML = "<p>No orders placed yet.</p>";
+                }
+            }
+
+            // Render orders with Cancel button for pending orders
+            function renderOrders(orders) {
+                ordersContainer.innerHTML = "";
+                orders.forEach((order, index) => {
+                    const orderDiv = document.createElement("div");
+                    orderDiv.className = "order-item";
+                    orderDiv.innerHTML = `
+                        <div>
+                            <strong>${order.name} (${order.symbol})</strong><br>
+                            Quantity: ${order.quantity}<br>
+                            Total: ${order.total}
+                        </div>
+                        <div>
+                            Status: ${order.status}
+                            ${order.status === "Pending" ? `
+                                <div class="order-actions">
+                                    <button onclick="cancelOrder(${index})">Cancel</button>
+                                </div>
+                            ` : ""}
+                        </div>
+                    `;
+                    ordersContainer.appendChild(orderDiv);
+                });
+            }
+
+            // Cancel order
+            window.cancelOrder = (orderIndex) => {
+                let orders = JSON.parse(localStorage.getItem("orders")) || [];
+                const canceledOrder = orders[orderIndex];
+                
+                if (canceledOrder.status === "Pending") {
+                    orders.splice(orderIndex, 1); // Remove the order from the array
+                    localStorage.setItem("orders", JSON.stringify(orders)); // Update localStorage
+                    alert(`Order for ${canceledOrder.name} (${canceledOrder.symbol}) has been canceled.`);
+                    loadOrders(); // Reload orders to reflect changes
+                }
+            };
+
+            loadOrders();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="orders">
+            <h2>Orders</h2>
+            <div id="orders-container" class="order-list">
+                <!-- Orders will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
