@@ -1,6 +1,6 @@
 from app import create_app, db
 from flask import Flask, render_template, jsonify
-import feedparser # type: ignore
+import feedparser
 from app.routes.prediction_routes import prediction_bp  # Ensure correct import path
 
 app = create_app()

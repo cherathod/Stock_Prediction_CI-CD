@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -206,6 +207,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header Section -->
     <div class="header">
@@ -220,9 +222,9 @@
 
     <!-- Background Video -->
     <div class="hero">
-        <video autoplay muted loop>
+        <!-- <video autoplay muted loop>
             <source src="/static/stock1.mp4" type="video/mp4">
-        </video>
+        </video> -->
         <div class="hero-content">
             <h1>All things finance, right here.</h1>
             <p>Built for a growing India.</p>
@@ -249,7 +251,7 @@
             </div>
         </div>
     </div>
-    
+
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         // Initialize Google OAuth client
@@ -258,36 +260,36 @@
                 client_id: "YOUR_CLIENT_ID.apps.googleusercontent.com", // Replace with your client ID
                 callback: handleCredentialResponse
             });
-    
+
             // Render Google sign-in button
             google.accounts.id.renderButton(
                 document.getElementById("googleSignInButton"),
                 { theme: "outline", size: "large" } // Customize button style
             );
         };
-    
+
         // Handle Google credential response
         function handleCredentialResponse(response) {
             // Extract ID token
             const idToken = response.credential;
-    
+
             // Send ID token to your backend for verification
             fetch('/google-login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ idToken })
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // Redirect or show success message
-                    alert('Login successful!');
-                    window.location.href = '/dashboard';
-                } else {
-                    alert('Login failed. Please try again.');
-                }
-            })
-            .catch(err => console.error('Error:', err));
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect or show success message
+                        alert('Login successful!');
+                        window.location.href = '/dashboard';
+                    } else {
+                        alert('Login failed. Please try again.');
+                    }
+                })
+                .catch(err => console.error('Error:', err));
         }
     </script>
 
@@ -295,8 +297,10 @@
 
     <!-- Footer Section -->
     <div class="footer">
-        © 2025 Finance Website. All rights reserved. | <a href="/static/terms.html">Terms</a> | <a href="/static/privacy.html">Privacy</a>
+        © 2025 Finance Website. All rights reserved. | <a href="/static/terms.html">Terms</a> | <a
+            href="/static/privacy.html">Privacy</a>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>

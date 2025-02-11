@@ -7,7 +7,7 @@ from app.utils import hash_password, verify_password
 from werkzeug.utils import secure_filename
 import os
 
-auth_bp = Blueprint("auth", __name__)
+auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 # Define a folder to store uploaded profile pictures
 UPLOAD_FOLDER = 'profile_pictures'
@@ -103,6 +103,10 @@ def profile():
 @auth_bp.route('/orders')
 def orders():
     return render_template('orders.html')
+
+@auth_bp.route("/options_trading")
+def options_trading():
+    return render_template("options_trading.html")
 
 ALPHA_VANTAGE_API_KEY = "TZZ4861X7WGGQJYR"
 

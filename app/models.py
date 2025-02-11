@@ -15,7 +15,6 @@ class RegisteredUser(db.Model):
     address = db.Column(db.String(255), nullable=True)
     date_of_birth = db.Column(db.Date, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
-    profile_picture = db.Column(db.String(255), nullable=True) 
 
 
 class LoginAttempt(db.Model):

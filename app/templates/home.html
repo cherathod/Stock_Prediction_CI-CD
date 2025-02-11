@@ -5,11 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bull-Bear Market Dashboard</title>
-    <!-- <link rel="stylesheet" href="../static/CSS/styles.css"> -->
-    <link rel="stylesheet" href="../static/CSS/home.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/home.css') }}">
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        const apiKey = 'YVAIGR6G6EXB0VP7'; // Replace with your Alpha Vantage API Key
+        const apiKey = "{{ api_key }}";
 
         async function fetchStockData(symbol, elementId) {
             const apiUrl = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${apiKey}`;
@@ -32,10 +31,10 @@
                     const percentChange = parseFloat(stockData["10. change percent"]);
 
                     displayElement.innerHTML = `
-                         <p>Price: ₹${price.toFixed(2)}</p>
-                         <p>Open: ₹${open.toFixed(2)}</p>
-                         <p>Change: ₹${change.toFixed(2)} (${percentChange})</p>
-                     `;
+                        <p>Price: ₹${price.toFixed(2)}</p>
+                        <p>Open: ₹${open.toFixed(2)}</p>
+                        <p>Change: ₹${change.toFixed(2)} (${percentChange})</p>
+                    `;
                     displayElement.classList.add(change >= 0 ? "positive" : "negative");
                 } else {
                     displayElement.innerHTML = `<p>No data available for ${symbol}.</p>`;
@@ -47,7 +46,6 @@
         }
 
         window.onload = function () {
-            // Fetch stock data for predefined symbols
             fetchStockData("NSE:NIFTY", "NIFTY-data");
             fetchStockData("BSE:SENSEX", "SENSEX-data");
             fetchStockData("NSE:BANKNIFTY", "BANKNIFTY-data");
@@ -80,41 +78,41 @@
 </head>
 
 <body>
-    <!-- Header Section -->
     <header>
         <div class="logo">
-            <img src="../static/images/Bull3.png" alt="Logo">
+            <img src="{{ url_for('static', filename='images/Bull3.png') }}" alt="Logo">
         </div>
 
         <div class="search-container">
             <input type="text" class="search-input" placeholder="Search...">
-            <img src="../static/images/search.png" alt="Search" class="search-img">
+            <img src="{{ url_for('static', filename='images/search.png') }}" alt="Search" class="search-img">
         </div>
         <div class="user-menu">
-            <a href="#"><img src="../static/images/notification.png" alt="Notifications"></a>
+            <a href="#"><img src="{{ url_for('static', filename='images/notification.png') }}" alt="Notifications"></a>
             <a href="{{ url_for('auth.orders') }}">
                 <img src="{{ url_for('static', filename='images/wallet.png') }}" alt="Wallet">
             </a>
-            <a href="{{ url_for('auth.profile') }}"> <img src="{{ url_for('static', filename='images/profile.png') }}"
-                    alt="Profile"> </a>
+            <a href="{{ url_for('auth.profile') }}">
+                <img src="{{ url_for('static', filename='images/profile.png') }}" alt="Profile">
+            </a>
         </div>
     </header>
 
     <div class="dashboard">
-        <!-- Sidebar -->
         <div class="sidebar">
             <ul>
-                <li><a href="{{ url_for('dashboard.options_trading') }}"><img
-                            src="{{ url_for('static', filename='images/Options_Trading.png') }}" alt="Options_Trading">
+                <li><a href="{{ url_for('auth.options_trading') }}">
+                        <img src="{{ url_for('static', filename='images/Options_Trading.png') }}" alt="Options_Trading">
                     </a></li>
-                <li><a href="{{ url_for('prediction_routes.stock_prediction') }}"><img
-                            src="{{ url_for('static', filename='images/Prediction.png') }}" alt="Prediction"></a></li>
-                <li><a href="{{ url_for('auth.stocks') }}"><img
-                            src="{{ url_for('static', filename='images/stock.png') }}" alt="Stock"></a></li>
+                <li><a href="{{ url_for('prediction_routes.stock_prediction') }}">
+                        <img src="{{ url_for('static', filename='images/Prediction.png') }}" alt="Prediction">
+                    </a></li>
+                <li><a href="{{ url_for('auth.stocks_view') }}">
+                        <img src="{{ url_for('static', filename='images/stock.png') }}" alt="Stock">
+                    </a></li>
             </ul>
         </div>
 
-        <!-- Main Content -->
         <div class="content">
             <section class="section tradingview-chart">
                 <div class="tradingview-widget-container">
@@ -123,22 +121,24 @@
             </section>
         </div>
     </div>
+
     <footer>
         <div class="footer-container">
             <div class="footer-left">
-                <img src="../static/images/Bull3.png" alt="Bull-Bear Logo" class="footer-logo">
+                <img src="{{ url_for('static', filename='images/Bull3.png') }}" alt="Bull-Bear Logo"
+                    class="footer-logo">
                 <p>
-                    Yamuna Nager, 10rd & 16th Floor<br>
+                    Yamuna Nagar, 10th & 16th Floor<br>
                     Nigdi Main Road, Pune<br>
-                    Maharashtara - 411044<br>
+                    Maharashtra - 411044<br>
                     <a href="#">Contact Us</a>
                 </p>
                 <div class="footer-social">
-                    <a href="#"><img src="../static/images/facebook.png" alt="Facebook"></a>
-                    <a href="#"><img src="../static/images/twitter.png" alt="Twitter"></a>
-                    <a href="#"><img src="../static/images/youtube.png" alt="YouTube"></a>
-                    <a href="#"><img src="../static/images/instagram.png" alt="Instagram"></a>
-                    <a href="#"><img src="../static/images/linkedin.png" alt="LinkedIn"></a>
+                    <a href="#"><img src="{{ url_for('static', filename='images/facebook.png') }}" alt="Facebook"></a>
+                    <a href="#"><img src="{{ url_for('static', filename='images/twitter.png') }}" alt="Twitter"></a>
+                    <a href="#"><img src="{{ url_for('static', filename='images/youtube.png') }}" alt="YouTube"></a>
+                    <a href="#"><img src="{{ url_for('static', filename='images/instagram.png') }}" alt="Instagram"></a>
+                    <a href="#"><img src="{{ url_for('static', filename='images/linkedin.png') }}" alt="LinkedIn"></a>
                 </div>
             </div>
 
@@ -148,39 +148,23 @@
                     <a href="#">Stocks</a>
                     <a href="#">Futures & Options</a>
                     <a href="#">Mutual Funds</a>
-                    <a href="#">Bill Payments</a>
                 </div>
                 <div>
                     <h4>BULL-BEAR</h4>
                     <a href="#">About Us</a>
-                    <a href="#">Media & Press</a>
                     <a href="#">Careers</a>
                     <a href="#">Help & Support</a>
-                    <a href="#">Trust & Safety</a>
                 </div>
                 <div>
                     <h4>QUICK LINKS</h4>
-                    <a href="#">AMC Mutual Funds</a>
                     <a href="#">Calculators</a>
-                    <a href="#">Glossary</a>
                     <a href="#">Open Demat Account</a>
-                    <a href="#">Sitemap</a>
                 </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>© 2025 Bull-Bear Stock Price Prediction App. All rights reserved. Built with ❤️ in India <br><a
-                    href="#">supportbullbear@gmail.com</a></br></p>
-            <div class="footer-apps">
-                <a href="#"><img src="../static/images/appstore.png" alt="Download on the App Store"></a>
-                <a href="#"><img src="../static/images/android.png" alt="Get it on Google Play"></a>
             </div>
         </div>
     </footer>
 
-    <script src="../static/js/home.js"></script>
-
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
 </body>
 
 </html>

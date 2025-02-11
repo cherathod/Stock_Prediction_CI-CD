@@ -1,21 +1,29 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, send_file
 import numpy as np
 import matplotlib.pyplot as plt
 import io
 import base64
 from scipy import stats
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import yfinance as yf
 import plotly.graph_objs as go  # type: ignore
 from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestRegressor
 from tensorflow.keras.models import load_model  # type: ignore
 import logging
+import datetime as dt
+import os
+import matplotlib
 
-prediction_bp = Blueprint('prediction', __name__)
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
-# Function to fetch and clean stock data
+prediction_bp = Blueprint('stock_prediction', __name__)
+
+# Load deep learning model
+model = load_model('data/stock_dl_model.h5')
+
 def get_cleaned_stock_data(ticker, start_date, end_date):
     stock_data = yf.download(ticker, start=start_date, end=end_date)
     stock_data = stock_data.dropna().drop_duplicates()
@@ -29,92 +37,59 @@ def get_cleaned_stock_data(ticker, start_date, end_date):
     stock_data = stock_data.drop(columns=['Volume'])
     return stock_data
 
-@prediction_bp.route('/time_predict', methods=['POST'])
-def time_predict():
-    try:
-        data = request.get_json()
-        if not data or 'ticker' not in data or 'years' not in data or 'model' not in data:
-            return jsonify({'error': 'Invalid input data'}), 400
+@prediction_bp.route('/stock_prediction', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        stock = request.form.get('stock', 'POWERGRID.NS')
+        start = dt.datetime(2000, 1, 1)
+        end = dt.datetime(2024, 10, 1)
+        df = yf.download(stock, start=start, end=end)
 
-        ticker = data['ticker']
-        years = int(data['years'])
-        model_name = data['model']
-        stock_data = get_cleaned_stock_data(ticker, '2021-01-01', '2022-01-01')
-        
-        stock_data['pct_change'] = stock_data['Close'].pct_change()
-        stock_data['rolling_mean'] = stock_data['Close'].rolling(window=10).mean()
-        stock_data['rolling_std'] = stock_data['Close'].rolling(window=10).std()
-        required_columns = ['pct_change', 'rolling_mean', 'rolling_std']
+        data_training = df['Close'][0:int(len(df) * 0.70)]
+        data_testing = df['Close'][int(len(df) * 0.70):]
 
-        if model_name == "LSTM":
-            model = load_model('models/lstm_model.h5')
-        elif model_name == "Random Forest":
-            model = RandomForestRegressor()
-            model.fit(stock_data[required_columns].dropna(), stock_data['Close'].dropna())
-        else:
-            model = LinearRegression()
-            model.fit(stock_data[required_columns].dropna(), stock_data['Close'].dropna())
+        scaler = MinMaxScaler(feature_range=(0, 1))
+        data_training_array = scaler.fit_transform(data_training.values.reshape(-1, 1))
 
-        prediction = model.predict(stock_data[required_columns].tail(1))[0]
+        past_100_days = data_training.tail(100)
+        final_df = pd.concat([past_100_days, data_testing], ignore_index=True)
+        input_data = scaler.transform(final_df.values.reshape(-1, 1))
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(stock_data.index, stock_data['Close'], label='Close Price')
-        plt.title(f'{ticker} Stock Price Prediction')
-        plt.xlabel('Date')
-        plt.ylabel('Price (USD)')
-        plt.legend()
-        img = io.BytesIO()
-        plt.savefig(img, format='png')
-        img.seek(0)
-        img_base64 = base64.b64encode(img.getvalue()).decode()
+        x_test, y_test = [], []
+        for i in range(100, input_data.shape[0]):
+            x_test.append(input_data[i - 100:i])
+            y_test.append(input_data[i, 0])
+        x_test, y_test = np.array(x_test), np.array(y_test)
 
-        return jsonify({'prediction': prediction, 'chartUrl': f"data:image/png;base64,{img_base64}"})
-    except Exception as e:
-        logging.error(f"Error in /time_predict: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        y_predicted = model.predict(x_test) * (1 / scaler.scale_[0])
+        y_test = y_test * (1 / scaler.scale_[0])
 
-@prediction_bp.route('/feature_prediction', methods=['POST'])
-def feature_prediction():
-    try:
-        data = request.get_json()
-        if not data or 'ticker' not in data or 'features' not in data or 'model' not in data:
-            return jsonify({'error': 'Invalid input data'}), 400
+        fig, ax = plt.subplots(figsize=(12, 6))
+        ax.plot(y_test, 'g', label="Original Price")
+        ax.plot(y_predicted, 'r', label="Predicted Price")
+        ax.set_title("Prediction vs Original Trend")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Price")
+        ax.legend()
 
-        ticker = data['ticker']
-        features = data['features']
-        model_name = data['model']
-        stock_data = get_cleaned_stock_data(ticker, '2021-01-01', '2022-01-01')
-        
-        stock_data['pct_change'] = stock_data['Close'].pct_change()
-        stock_data['rolling_mean'] = stock_data['Close'].rolling(window=10).mean()
-        stock_data['rolling_std'] = stock_data['Close'].rolling(window=10).std()
+        # Check the `app/static/` directory exists
+        static_dir = os.path.join(os.getcwd(), 'app', 'static')
+        if not os.path.exists(static_dir):
+            os.makedirs(static_dir)  # Create the folder if it doesn't exist
 
-        if model_name == "LSTM":
-            model = load_model('models/lstm_model.h5')
-        elif model_name == "Random Forest":
-            model = RandomForestRegressor()
-            model.fit(stock_data[['pct_change', 'rolling_mean', 'rolling_std']].dropna(), stock_data['Close'].dropna())
-        else:
-            model = LinearRegression()
-            model.fit(stock_data[['pct_change', 'rolling_mean', 'rolling_std']].dropna(), stock_data['Close'].dropna())
+        # Save the image in `app/static/`
+        image_filename = 'stock_prediction.png'
+        image_path = os.path.join(static_dir, image_filename)
+        plt.savefig(image_path)
+        plt.close(fig)
 
-        prediction = model.predict([features])[0]
+        return render_template('stock_prediction.html', plot_path_prediction=image_filename)
+    
+    return render_template('stock_prediction.html')
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(stock_data.index, stock_data['Close'], label='Close Price')
-        plt.title(f'{ticker} Stock Price Prediction with Features')
-        plt.xlabel('Date')
-        plt.ylabel('Price (USD)')
-        plt.legend()
-        img = io.BytesIO()
-        plt.savefig(img, format='png')
-        img.seek(0)
-        img_base64 = base64.b64encode(img.getvalue()).decode()
-
-        return jsonify({'prediction': prediction, 'chartUrl': f"data:image/png;base64,{img_base64}"})
-    except Exception as e:
-        logging.error(f"Error in /feature_prediction: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+@prediction_bp.route('/download/<filename>')
+def download_file(filename):
+    return send_file(f"static/{filename}", as_attachment=True)
 
 @prediction_bp.route('/stock_prediction')
 def stock_prediction():

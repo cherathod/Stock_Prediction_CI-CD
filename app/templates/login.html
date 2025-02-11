@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #c6c6e7;
+            background: linear-gradient(to right, #4A90E2, #82f6b8);
         }
 
         .login-container {
@@ -23,12 +24,13 @@
             width: 800px;
             max-width: 90%;
             background: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
             overflow: hidden;
         }
 
-        .left-section, .right-section {
+        .left-section,
+        .right-section {
             padding: 30px;
             flex: 1;
             display: flex;
@@ -38,7 +40,7 @@
 
         /* Left Section Styles */
         .left-section {
-            background: linear-gradient(135deg, #82f6b8, #82f6b8);
+            background: linear-gradient(135deg, #2A2A72, #009FFD);
             color: white;
             text-align: center;
         }
@@ -69,35 +71,34 @@
             flex-direction: column;
         }
 
-        form input[type="email"],
-        form input[type="password"] {
-            padding: 10px;
+        form input {
+            padding: 12px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 16px;
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        form input[type="email"]:focus,
-        form input[type="password"]:focus {
-            border-color: #82f6b8;
-            box-shadow: 0 0 5px rgba(130, 246, 184, 0.5);
+        form input:focus {
+            border-color: #009FFD;
+            box-shadow: 0 0 5px rgba(0, 159, 253, 0.5);
+            outline: none;
         }
 
         form .submit-btn {
-            padding: 10px;
-            background-color: #82f6b8;
+            padding: 12px;
+            background: #009FFD;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: 0.3s ease-in-out;
         }
 
         form .submit-btn:hover {
-            background-color: #82f6b8;
+            background: #006fbd;
         }
 
         .footer-text {
@@ -108,15 +109,16 @@
         }
 
         .footer-text a {
-            color: #c1cdd9;
+            color: #009FFD;
             text-decoration: none;
+            font-weight: bold;
         }
 
         .footer-text a:hover {
             text-decoration: underline;
         }
 
-        /* Registration Section Styles */
+        /* Registration Section */
         .register-section {
             text-align: center;
             margin-top: 20px;
@@ -124,57 +126,83 @@
 
         .register-btn {
             display: inline-block;
-            padding: 10px 20px;
-            background-color: #82f6b8;
+            padding: 12px 24px;
+            background: #009FFD;
             color: white;
             text-decoration: none;
-            border-radius: 5px;
+            border-radius: 6px;
             font-size: 14px;
-            transition: background-color 0.3s ease;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
         }
 
         .register-btn:hover {
-            background-color: #82f6b8;
+            background: #006fbd;
         }
 
-        /* Responsive Styles */
+        /* Flash Message Styles */
+        .flash {
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .flash.success {
+            background: #82f6b8;
+            color: #1a502e;
+        }
+
+        .flash.error {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
             }
 
-            .left-section, .right-section {
+            .left-section,
+            .right-section {
                 flex: none;
                 padding: 20px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="left-section">
             <h1>Simple, Free<br>Investing.</h1>
-            <p>ETFs</p>
+            <p>ETFs & More</p>
         </div>
         <div class="right-section">
             <h2>Welcome to Bull & Bear</h2>
-            <!-- Flash messages -->
+
+            <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="flash {{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
             {% endwith %}
+
             <form method="POST">
                 <input type="email" name="email" placeholder="Your Email Address" required>
                 <input type="password" name="password" placeholder="Your Password" required>
                 <button type="submit" class="submit-btn">Continue</button>
             </form>
+
             <p class="footer-text">
-                By proceeding, I agree to <a href="#">T&C</a>, 
+                By proceeding, I agree to <a href="#">T&C</a>,
                 <a href="#">Privacy Policy</a> & <a href="#">Tariff Rates</a>.
             </p>
+
             <!-- Registration Button -->
             <div class="register-section">
                 <p>Don't have an account?</p>
@@ -183,4 +211,5 @@
         </div>
     </div>
 </body>
+
 </html>
