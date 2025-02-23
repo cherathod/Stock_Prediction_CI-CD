@@ -5,14 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Prediction Dashboard</title>
-    <link rel="stylesheet" href="../static/CSS/prediction.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/prediction.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
     <div class="sidebar">
         <div class="logo">
-            <img src="../static/images/Bull3.png" alt="Logo" style="width: 200px; display: block; margin: 0 auto;">
+            <img src="{{ url_for('static', filename='images/Bull3.png') }}" alt="Logo"
+                style="width: 200px; display: block; margin: 0 auto;">
         </div>
         <div class="container">
             <h1 class="text-center">Stock Trend Prediction</h1>
@@ -23,11 +24,10 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
-            <a href="/" class="btn btn-secondary" style="margin-top: 20px; display: block; width: fit-content;">Back to
-                Home</a>
+            <a href="/dashboard" class="btn btn-secondary"
+                style="margin-top: 20px; display: block; width: fit-content;">Back to Home</a>
         </div>
     </div>
-
 
     <div class="content">
         <header style="max-width: 50%;">
@@ -56,6 +56,27 @@
         </div>
         {% endif %}
 
+        {% if line_plot %}
+        <div class="chart-container">
+            <h3>Line Plot: Prediction vs Original</h3>
+            <img src="{{ url_for('static', filename='line_plot.png') }}" alt="Line Plot">
+        </div>
+        {% endif %}
+
+        {% if scatter_plot %}
+        <div class="chart-container">
+            <h3>Scatter Plot: Predicted vs Actual Prices</h3>
+            <img src="{{ url_for('static', filename='scatter_plot.png') }}" alt="Scatter Plot">
+        </div>
+        {% endif %}
+
+        {% if histogram %}
+        <div class="chart-container">
+            <h3>Histogram of Stock Price Changes</h3>
+            <img src="{{ url_for('static', filename='histogram.png') }}" alt="Histogram">
+        </div>
+        {% endif %}
+
         {% if data_desc %}
         <div class="table-responsive">
             <h3 class="mt-4">Descriptive Data from Jan 2000 to Nov 2024</h3>
@@ -66,7 +87,9 @@
         {% if dataset_link %}
         <div class="download-link">
             <a href="{{ url_for('download_file', filename=dataset_link.split('/')[-1]) }}" class="btn btn-success"
-                download>Download Dataset (CSV)</a>
+                download>
+                Download Dataset (CSV)
+            </a>
         </div>
         {% endif %}
     </div>
